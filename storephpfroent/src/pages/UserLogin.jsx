@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom"; // Import navigation hook
 import { loginUser } from "../api/api"; // Import API function
-import UserLoginComponent from "../components/UserLoginComponent"; // Import form component
+import UserLoginComponent from "../pages/user/components/UserLoginComponent"; // Import form component
 
 const UserLogin = () => {
   const {

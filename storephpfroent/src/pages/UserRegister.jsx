@@ -1,7 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { registerUser } from "../api/api"; // Import API function
-import UserRegisterComponent from "../components/UserRegisterComponent"; // Import form component
+import UserRegisterComponent from "../pages/user/components/UserRegisterComponent.jsx"; // Import form component
 
 const UserRegister = () => {
   const {
