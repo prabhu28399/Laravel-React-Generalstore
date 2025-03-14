@@ -1,23 +1,14 @@
-import React from "react";
-import StatsCard from "../components/StatsCard.jsx"; // Importing StatsCard component
+import React, { useContext } from "react";
+import { AuthContext } from "../../../context/AuthContext"; // Import AuthContext
 
-const WelcomeMessage = ({ username }) => {
+const WelcomeMessage = ({ shopname }) => {
+  const { user } = useContext(AuthContext); // ✅ Get logged-in user
+
   return (
-    <div className="p-6 bg-gray-100 mt-0 min-h-screen">
-      {/* Welcome Message */}
+    <div className="p-1 bg-gray-100 mt-0">
       <h1 className="text-3xl font-bold text-gray-900 mb-20">
-        Welcome, {username}
+        Welcome {user ? user.shopname : "Shop Name"}{" "}
       </h1>
-
-      {/* Stats Cards Section */}
-      <StatsCard />
-
-      {/* More components can be added below */}
-      <div className="mt-6">
-        {/* Example Placeholder for Additional Components */}
-        {/* <AnotherComponent /> */}
-        {/* <YetAnotherComponent /> */}
-      </div>
     </div>
   );
 };

@@ -3,22 +3,22 @@ import { FaAward, FaStar } from "react-icons/fa";
 
 const StatsCard = () => {
   return (
-    <div className="flex space-x-6 justify-center">
+    <div className="flex space-x-4 justify-center">
       {/* Card 1 */}
-      <div className="bg-orange-50 p-6 rounded-lg shadow-md flex items-center space-x-4 w-64">
-        <FaAward className="text-orange-500 text-3xl" />
+      <div className="bg-orange-50 p-4 rounded-lg shadow-md flex items-center space-x-2 w-56">
+        <FaAward className="text-orange-500 text-2xl" />
         <div>
-          <h2 className="text-2xl font-bold text-black">75K+</h2>
-          <p className="text-gray-600">Expert Chat & Call Minutes</p>
+          <h2 className="text-xl font-bold text-black">75K+</h2>
+          <p className="text-gray-600 text-sm">Expert Chat & Call Minutes</p>
         </div>
       </div>
 
       {/* Card 2 */}
-      <div className="bg-orange-50 p-6 rounded-lg shadow-md flex items-center space-x-4 w-64">
-        <FaStar className="text-orange-500 text-3xl" />
+      <div className="bg-orange-50 p-4 rounded-lg shadow-md flex items-center space-x-2 w-56">
+        <FaStar className="text-orange-500 text-2xl" />
         <div>
-          <h2 className="text-2xl font-bold text-black">4.9</h2>
-          <p className="text-gray-600">Average Expert Rating</p>
+          <h2 className="text-xl font-bold text-black">4.9</h2>
+          <p className="text-gray-600 text-sm">Average Expert Rating</p>
         </div>
       </div>
     </div>

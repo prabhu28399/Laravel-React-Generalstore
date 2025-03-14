@@ -1,35 +1,26 @@
 import React, { useContext } from "react";
-import {
-  FaSearch,
-  FaBell,
-  FaRegNewspaper,
-  FaChevronDown,
-} from "react-icons/fa";
+import { FaSearch, FaBell, FaRegNewspaper } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-// import { UserContext } from "../../../context/UserContext"; // Correct relative path
+import { AuthContext } from "../../../context/AuthContext"; // Import AuthContext
 
 const UHeaderCompnt = () => {
   const navigate = useNavigate();
-  // const { user } = useContext(UserContext); // Access user data from context
+  const { user } = useContext(AuthContext); // ✅ Get logged-in user
 
-  // Default image if no profile picture is available
+  // Default profile image
   const defaultImage =
     "https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg";
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 flex items-center justify-between bg-white px-4 py-2 shadow-md">
       {/* Left Section - Logo and Site Name */}
-      <div className="flex items-center space-x-4">
-        <span className="text-xl font-bold">PPP</span>
+      <div className="flex items-center space-x-10">
+        <span className="text-xl font-bold">3P</span>
         <button className="flex items-center space-x-1 text-gray-700">
-          <span> User</span>
-          <FaChevronDown size={12} />
-        </button>
-        <button className="text-gray-700">About Us</button>
-        <button className="text-gray-700">Contact Us</button>
-        <button className="text-gray-700">Help</button>
-        <button className="bg-purple-600 text-white px-3 py-1 rounded-md">
-          Upgrade
+          <span>
+            {user ? user.shopname : "Shop Name"}{" "}
+            {/* ✅ Show only the shop name */}
+          </span>
         </button>
       </div>
 

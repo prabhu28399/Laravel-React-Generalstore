@@ -15,15 +15,14 @@ import {
 
 const menuItems = [
   { name: "Home", icon: <FaHome /> },
-  { name: "Getting Paid", icon: <FaMoneyBillWave /> },
-  { name: "Booking Calendar", icon: <FaCalendarAlt /> },
-  { name: "Sales", icon: <FaChartBar /> },
-  { name: "Catalog", icon: <FaBoxOpen /> },
-  { name: "Apps", icon: <FaAppStore /> },
-  { name: "Site & Mobile App", icon: <FaGlobe /> },
-  { name: "Inbox", icon: <FaInbox /> },
-  { name: "Customers & Leads", icon: <FaUsers /> },
-  { name: "Marketing", icon: <FaBullhorn /> },
+  { name: "inventory", icon: <FaMoneyBillWave /> },
+  { name: "location", icon: <FaCalendarAlt /> },
+  { name: "kathabook", icon: <FaChartBar /> },
+  { name: "billing", icon: <FaBoxOpen /> },
+  { name: "Profile", icon: <FaAppStore /> },
+  { name: "About Us", icon: <FaGlobe /> },
+  { name: "Contact Us", icon: <FaInbox /> },
+  { name: "Feedback", icon: <FaUsers /> },
 ];
 
 const UserNav = () => {
