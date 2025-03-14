@@ -31,15 +31,20 @@ export const AuthProvider = ({ children }) => {
     fetchUserProfile();
   }, [token]);
 
-  // Login function
   const login = async (userData) => {
     try {
       const response = await loginUser(userData);
-      setToken(response.token);
-      localStorage.setItem("token", response.token);
 
-      const userProfile = await getUserProfile(response.token);
-      setUser(userProfile);
+      if (response.access_token) {
+        // ✅ Correctly checking token existence
+        setToken(response.access_token);
+        localStorage.setItem("token", response.access_token);
+
+        const userProfile = await getUserProfile(response.access_token);
+        setUser(userProfile);
+      } else {
+        throw new Error("Invalid response format");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       throw error;

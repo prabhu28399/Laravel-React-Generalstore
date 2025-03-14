@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom"; // Import navigation hook
-import { loginUser } from "../api/api"; // Import API function
-import UserLoginComponent from "../pages/user/components/UserLoginComponent"; // Import form component
+import { useNavigate } from "react-router-dom";
+import UserLoginComponent from "../pages/user/components/UserLoginComponent";
+import { AuthContext } from "../context/AuthContext"; // Import AuthContext
 
 const UserLogin = () => {
+  const { login } = useContext(AuthContext); // Get login function from AuthContext
   const {
     register,
     handleSubmit,
@@ -12,22 +13,25 @@ const UserLogin = () => {
     reset,
   } = useForm();
 
-  const navigate = useNavigate(); // Initialize navigation hook
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
 
   const onSubmit = async (data) => {
     setMessage(""); // Clear previous messages
 
     try {
-      const response = await loginUser(data);
+      await login(data); // Call the login function from AuthContext
       setMessage("Login successful!");
-      console.log("User logged in:", response);
+      console.log("User logged in successfully!");
 
-      reset(); // Clear form fields after success
+      reset(); // Clear form fields
 
-      // Redirect to User Index Page
-      navigate("/user/Index");
+      // Redirect after successful login
+      navigate("/user/index");
     } catch (error) {
+      console.error("Login error:", error);
+
+      // Display proper error message
       setMessage("Invalid credentials. Please try again.");
     }
   };

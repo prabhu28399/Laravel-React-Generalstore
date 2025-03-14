@@ -1,9 +1,12 @@
 import React from "react";
+import HomeHeader from "./homepage/sections/HomeHeader";
+import HomeBody from "./homepage/sections/HomeBody";
 
 const Home = () => {
   return (
     <div>
-      <h4>home page</h4>
+      <HomeHeader />
+      <HomeBody />
     </div>
   );
 };
