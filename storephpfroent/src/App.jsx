@@ -7,6 +7,7 @@ import UserLogin from "./pages/UserLogin";
 import UserIndex from "./pages/user/pages/UserIndex";
 import PrivateRoute from "./components/PrivateRoute";
 import { AuthProvider } from "./context/AuthContext";
+import UserCategory from "./pages/user/pages/UserCategory";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/user/category" element={<UserCategory />} />
         </Routes>
       </Router>
     </AuthProvider>

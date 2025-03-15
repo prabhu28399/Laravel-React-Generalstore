@@ -15,10 +15,14 @@ import {
 
 const menuItems = [
   { name: "Home", icon: <FaHome /> },
-  { name: "inventory", icon: <FaMoneyBillWave /> },
-  { name: "location", icon: <FaCalendarAlt /> },
-  { name: "kathabook", icon: <FaChartBar /> },
-  { name: "billing", icon: <FaBoxOpen /> },
+  {
+    name: "Inventory",
+    icon: <FaMoneyBillWave />,
+    subItems: ["Category", "Products", "Locations", "Stocks"], // Submenu items for Inventory
+  },
+  { name: "Location", icon: <FaCalendarAlt /> },
+  { name: "KathaBook", icon: <FaChartBar /> },
+  { name: "Billing", icon: <FaBoxOpen /> },
   { name: "Profile", icon: <FaAppStore /> },
   { name: "About Us", icon: <FaGlobe /> },
   { name: "Contact Us", icon: <FaInbox /> },
@@ -51,18 +55,26 @@ const UserNav = () => {
                 {item.icon}
                 <span>{item.name}</span>
               </span>
-              <FaAngleRight
-                className={`text-sm transition-transform ${
-                  open === index ? "rotate-90" : ""
-                }`}
-              />
+              {item.subItems && (
+                <FaAngleRight
+                  className={`text-sm transition-transform ${
+                    open === index ? "rotate-90" : ""
+                  }`}
+                />
+              )}
             </button>
 
-            {/* Dropdown Content (if needed) */}
-            {open === index && (
+            {/* Dropdown Content for Inventory */}
+            {open === index && item.subItems && (
               <ul className="ml-6 mt-1 text-sm text-gray-400">
-                <li className="py-1 hover:text-white">Option 1</li>
-                <li className="py-1 hover:text-white">Option 2</li>
+                {item.subItems.map((subItem, subIndex) => (
+                  <li
+                    key={subIndex}
+                    className="py-1 hover:text-white cursor-pointer"
+                  >
+                    {subItem}
+                  </li>
+                ))}
               </ul>
             )}
           </li>
