@@ -14,11 +14,16 @@ import {
 } from "react-icons/fa";
 
 const menuItems = [
-  { name: "Home", icon: <FaHome /> },
+  { name: "Home", link: "/user/index", icon: <FaHome /> },
   {
     name: "Inventory",
     icon: <FaMoneyBillWave />,
-    subItems: ["Category", "Products", "Locations", "Stocks"], // Submenu items for Inventory
+    subItems: [
+      { name: "Category", link: "/inventory/category" }, // Category with an external link
+      { name: "Products", link: "/inventory/product" }, // Modify this as needed
+      { name: "Locations", link: "/inventory/location" }, // Modify this as needed
+      { name: "Stocks", link: "/inventory/stock" }, // Modify this as needed
+    ],
   },
   { name: "Location", icon: <FaCalendarAlt /> },
   { name: "KathaBook", icon: <FaChartBar /> },
@@ -72,7 +77,13 @@ const UserNav = () => {
                     key={subIndex}
                     className="py-1 hover:text-white cursor-pointer"
                   >
-                    {subItem}
+                    <a
+                      href={subItem.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {subItem.name}
+                    </a>
                   </li>
                 ))}
               </ul>

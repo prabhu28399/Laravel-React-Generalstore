@@ -21,4 +21,7 @@ class Product extends Model {
     public function stock() {
         return $this->hasOne(ProductStock::class, 'product_id', 'product_id');
     }
+
+   
+
 }

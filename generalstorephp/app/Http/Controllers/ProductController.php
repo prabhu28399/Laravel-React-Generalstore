@@ -6,10 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 
 class ProductController extends Controller {
-    public function index() {
-        return response()->json(Product::all(), 200);
+    public function index()
+    {
+        $products = Product::with(['category', 'stock'])->get();
+        return response()->json($products, 200);
     }
-
+    
+    
     public function store(Request $request) {
         $request->validate([
             'user_id' => 'required|exists:users,id',
