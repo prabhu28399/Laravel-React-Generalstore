@@ -11,7 +11,6 @@ return new class extends Migration {
             $table->string('category_id');
             $table->string('product_id')->unique();
             $table->string('product_name');
-            $table->integer('quantity');
             $table->timestamps();
 
             $table->foreign('category_id')->references('category_id')->on('product_categories')->onDelete('cascade');

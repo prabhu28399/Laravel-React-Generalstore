@@ -22,6 +22,6 @@ class Product extends Model {
         return $this->hasOne(ProductStock::class, 'product_id', 'product_id');
     }
 
-   
+    protected $with = ['stock'];
 
 }

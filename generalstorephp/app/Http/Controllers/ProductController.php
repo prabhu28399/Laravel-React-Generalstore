@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Validation\ValidationException;
+
 
 class ProductController extends Controller {
     public function index()
@@ -14,15 +16,43 @@ class ProductController extends Controller {
     
     
     public function store(Request $request) {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'category_id' => 'required|exists:product_categories,category_id',
-            'product_name' => 'required|string|unique:products,product_name'
-        ]);
-
-        $product = Product::create($request->all());
-        return response()->json($product, 201);
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+                'category_id' => 'required|exists:product_categories,category_id',
+                'product_name' => 'required|string|unique:products,product_name',
+                'quantity' => 'required|integer|min:1', // ✅ Still validating quantity
+            ]);
+    
+            // Generate unique product ID (pidXYZ)
+            $productId = 'pid' . rand(100, 999);
+    
+            // ✅ Create the product
+            $product = Product::create([
+                'user_id' => $request->user_id,
+                'category_id' => $request->category_id,
+                'product_id' => $productId,
+                'product_name' => $request->product_name,
+            ]);
+    
+            // ✅ Store quantity in the stock table
+            $product->stock()->create([
+                'product_id' => $product->product_id,
+                'quantity' => $request->quantity,
+            ]);
+    
+            return response()->json($product->load('stock'), 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to add product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
+    
+    
+    
 
     public function show($id) {
         $product = Product::findOrFail($id);
@@ -59,12 +89,6 @@ class ProductController extends Controller {
         return response()->json($product->load('stock','category'), 200);
     }
     
-
-
-    // public function destroy($id) {
-    //     Product::findOrFail($id)->delete();
-    //     return response()->json(['message' => 'Product deleted'], 200);
-    // }
     public function destroy($product_id) {
         $product = Product::where('product_id', $product_id)->firstOrFail();
     

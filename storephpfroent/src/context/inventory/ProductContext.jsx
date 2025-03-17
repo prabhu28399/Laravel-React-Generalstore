@@ -6,6 +6,7 @@ const ProductContext = createContext();
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  // const [categories, setCategories] = useState([]); // Ensure it's an array
 
   useEffect(() => {
     fetchProducts();
@@ -24,6 +25,38 @@ export const ProductProvider = ({ children }) => {
       console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const addProduct = async (productData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      // Assuming `user_id` is stored in localStorage after login
+      const user_id = localStorage.getItem("user_id");
+
+      if (!user_id) {
+        console.error("User ID is missing. Ensure the user is logged in.");
+        return;
+      }
+
+      const productPayload = {
+        ...productData,
+        user_id: user_id, // ✅ Adding user_id required by backend
+      };
+
+      const res = await axios.post(
+        "http://127.0.0.1:8000/api/products",
+        productPayload,
+        { headers }
+      );
+      setProducts([...products, res.data]); // Update UI after adding product
+    } catch (error) {
+      console.error(
+        "Error adding product:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -57,28 +90,6 @@ export const ProductProvider = ({ children }) => {
   };
 
   // ✅ Delete product function (with console logs for debugging)
-  // const deleteProduct = async (id) => {
-  //   try {
-  //     const token = localStorage.getItem("token");
-  //     const headers = { Authorization: `Bearer ${token}` };
-
-  //     await axios.delete(`http://127.0.0.1:8000/api/products/${id}`, {
-  //       headers,
-  //     });
-
-  //     console.log("Product deleted:", id);
-
-  //     // ✅ Remove from state
-  //     setProducts((prevProducts) =>
-  //       prevProducts.filter((product) => product.id !== id)
-  //     );
-  //   } catch (error) {
-  //     console.error(
-  //       "Error deleting product:",
-  //       error.response?.data || error.message
-  //     );
-  //   }
-  // };
 
   const deleteProduct = async (product_id) => {
     try {
@@ -108,7 +119,7 @@ export const ProductProvider = ({ children }) => {
 
   return (
     <ProductContext.Provider
-      value={{ products, loading, updateProduct, deleteProduct }}
+      value={{ products, loading, updateProduct, addProduct, deleteProduct }}
     >
       {children}
     </ProductContext.Provider>

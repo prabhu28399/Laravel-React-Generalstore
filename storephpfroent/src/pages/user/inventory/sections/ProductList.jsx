@@ -1,18 +1,24 @@
 import React, { useState, useEffect, useContext } from "react";
-import { AuthContext } from "../../../../context/AuthContext"; // ✅ Import AuthContext
 import { useProduct } from "../../../../context/inventory/ProductContext";
-import { Edit, Trash2, Save, X } from "lucide-react";
+import { useCategory } from "../../../../context/inventory/CategoryContext"; // ✅ Fixed import path
+import { AuthContext } from "../../../../context/AuthContext";
+import { Edit, Trash2, Save, X, Plus } from "lucide-react";
+import axios from "axios";
 
 const ProductList = () => {
-  const { products, loading, updateProduct, deleteProduct } = useProduct();
-  const { token } = useContext(AuthContext); // ✅ Use AuthContext
+  const { user, token } = useContext(AuthContext);
+  const { products, addProduct, updateProduct, deleteProduct, loading } =
+    useProduct();
+  const { categories } = useCategory(); // ✅ Use categories from CategoryContext
 
   const [editingProductId, setEditingProductId] = useState(null);
   const [updatedProductData, setUpdatedProductData] = useState({});
-
-  useEffect(() => {
-    // console.log("Products Data:", products);
-  }, [products]); // Debug API response
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    product_name: "",
+    quantity: "",
+    category_id: "",
+  });
 
   if (loading) return <p className="text-white">Loading...</p>;
 
@@ -24,25 +30,136 @@ const ProductList = () => {
     });
   };
 
-  const handleSaveClick = async () => {
+  const handleSaveClick = () => {
     if (!updatedProductData.product_name.trim()) {
       alert("Product name cannot be empty!");
       return;
     }
-    await updateProduct(
-      editingProductId,
-      {
-        product_name: updatedProductData.product_name,
-        quantity: updatedProductData.quantity,
-      },
-      token
-    ); // ✅ Send token for authentication
+    updateProduct(editingProductId, updatedProductData);
     setEditingProductId(null);
+  };
+
+  const handleAddProduct = async () => {
+    if (!user || !user.id) {
+      console.error("User ID is missing.");
+      return;
+    }
+
+    if (
+      !newProduct.product_name.trim() ||
+      !newProduct.quantity ||
+      !newProduct.category_id
+    ) {
+      alert("Please fill all fields before adding the product.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/products",
+        {
+          user_id: user.id,
+          category_id: newProduct.category_id, // ✅ Sends selected category ID
+          product_name: newProduct.product_name, // ✅ Sends product name
+          quantity: newProduct.quantity, // ✅ Ensures quantity is sent
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Product added:", response.data);
+
+      // ✅ Clear input fields after successful addition
+      setNewProduct({
+        product_name: "",
+        quantity: "",
+        category_id: "",
+      });
+
+      // ✅ Refresh product list
+      addProduct(response.data);
+    } catch (error) {
+      console.error(
+        "Error adding product:",
+        error.response?.data || error.message
+      );
+    }
   };
 
   return (
     <div className="p-4 bg-gray-900 text-white rounded-lg">
       <h2 className="text-lg font-semibold mb-3">Product List</h2>
+
+      {/* Add Product Button */}
+      <button
+        onClick={() => setShowAddForm(!showAddForm)}
+        className="mb-3 p-2 bg-green-600 rounded hover:bg-green-500 flex items-center"
+      >
+        <Plus className="w-5 h-5 mr-2" /> Add Product
+      </button>
+
+      {/* Add Product Form */}
+      {showAddForm && (
+        <div className="mb-4 p-3 bg-gray-800 rounded">
+          <h3 className="mb-2 text-lg">Add New Product</h3>
+
+          {/* Product Name Input */}
+          <input
+            type="text"
+            placeholder="Product Name"
+            value={newProduct.product_name}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, product_name: e.target.value })
+            }
+            className="w-full p-2 mb-2 bg-gray-700 rounded text-white"
+          />
+
+          {/* Quantity Input */}
+          <input
+            type="number"
+            placeholder="Quantity"
+            value={newProduct.quantity}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, quantity: e.target.value })
+            }
+            className="w-full p-2 mb-2 bg-gray-700 rounded text-white"
+          />
+
+          {/* Category Selection Dropdown */}
+          <select
+            value={newProduct.category_id}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, category_id: e.target.value })
+            }
+            className="w-full p-2 mb-2 bg-gray-700 rounded text-white"
+          >
+            <option value="">Select Category</option>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <option key={category.category_id} value={category.category_id}>
+                  {category.category_name}
+                </option>
+              ))
+            ) : (
+              <option disabled>Loading categories...</option>
+            )}
+          </select>
+
+          {/* Add Product Button */}
+          <button
+            onClick={handleAddProduct}
+            className="p-2 bg-blue-600 rounded hover:bg-blue-500"
+          >
+            Add Product
+          </button>
+        </div>
+      )}
+
+      {/* Product Table */}
       <table className="w-full border border-gray-700 text-left">
         <thead className="bg-gray-800">
           <tr>
@@ -119,7 +236,7 @@ const ProductList = () => {
                   </button>
                 )}
                 <button
-                  onClick={() => deleteProduct(product.product_id, token)} // ✅ Send token
+                  onClick={() => deleteProduct(product.product_id)}
                   className="p-1 bg-red-600 rounded hover:bg-red-500"
                 >
                   <Trash2 className="w-5 h-5 text-white" />
