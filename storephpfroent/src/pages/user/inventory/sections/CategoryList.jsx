@@ -1,18 +1,19 @@
 import React, { useState, useContext } from "react";
-import { useCategory } from "../../../../context/inventory/CategoryContext"; // ✅ Using Category Context
-import { Edit, Trash2, Plus } from "lucide-react";
+import { useCategory } from "../../../../context/inventory/CategoryContext";
+import { Plus } from "lucide-react";
 import axios from "axios";
 import { AuthContext } from "../../../../context/AuthContext";
+import CtgListCompnt from "../components/CtgListCompnt"; // ✅ Import table component
 
 const CategoryList = () => {
-  const { token, user } = useContext(AuthContext); // ✅ Get token and user
-  const { categories, addCategory, updateCategory, deleteCategory, loading } =
-    useCategory();
+  const { token, user } = useContext(AuthContext);
+  const { categories, updateCategory, deleteCategory, loading } = useCategory();
 
   const [editingCategory, setEditingCategory] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [newCategory, setNewCategory] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+
   const handleAddCategory = async () => {
     if (!user || !user.id) {
       console.error("User ID is missing.");
@@ -23,8 +24,8 @@ const CategoryList = () => {
       const response = await axios.post(
         "http://127.0.0.1:8000/api/categories",
         {
-          category_name: newCategory, // ✅ Use correct field name
-          user_id: user.id, // ✅ Include user_id
+          category_name: newCategory,
+          user_id: user.id,
         },
         {
           headers: {
@@ -35,7 +36,7 @@ const CategoryList = () => {
       );
 
       console.log("Category added:", response.data);
-      setNewCategory(""); // ✅ Clear input after adding
+      setNewCategory("");
     } catch (error) {
       console.error(
         "Error adding category:",
@@ -63,66 +64,21 @@ const CategoryList = () => {
           <Plus className="w-5 h-5 mr-1" /> Add Category
         </button>
       </div>
+
       {categories.length === 0 ? (
         <p>No categories found.</p>
       ) : (
-        <table className="w-full border border-gray-700 text-left">
-          <thead className="bg-gray-800">
-            <tr>
-              <th className="border border-gray-700 p-2">Category Id</th>
-              <th className="border border-gray-700 p-2">Category</th>
-              <th className="border border-gray-700 p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((category) => (
-              <tr key={category.id} className="border border-gray-700">
-                <td className="p-2">
-                  {category.category_id || `pct${category.id}`}
-                </td>
-                <td className="p-2">
-                  {editingCategory === category.id ? (
-                    <input
-                      type="text"
-                      value={updatedName}
-                      onChange={(e) => setUpdatedName(e.target.value)}
-                      className="bg-gray-700 p-1 rounded text-white"
-                    />
-                  ) : (
-                    category.category_name
-                  )}
-                </td>
-                <td className="p-2 flex gap-2">
-                  {editingCategory === category.id ? (
-                    <button
-                      onClick={() => handleUpdateCategory(category.id)}
-                      className="p-1 bg-green-600 rounded hover:bg-green-500"
-                    >
-                      Save
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        setEditingCategory(category.id);
-                        setUpdatedName(category.category_name);
-                      }}
-                      className="p-1 bg-blue-600 rounded hover:bg-blue-500"
-                    >
-                      <Edit className="w-5 h-5 text-white" />
-                    </button>
-                  )}
-                  <button
-                    onClick={() => deleteCategory(category.id)}
-                    className="p-1 bg-red-600 rounded hover:bg-red-500"
-                  >
-                    <Trash2 className="w-5 h-5 text-white" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <CtgListCompnt
+          categories={categories}
+          editingCategory={editingCategory}
+          updatedName={updatedName}
+          setUpdatedName={setUpdatedName}
+          setEditingCategory={setEditingCategory}
+          handleUpdateCategory={handleUpdateCategory}
+          deleteCategory={deleteCategory}
+        />
       )}
+
       {showAddModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
           <div className="bg-gray-800 p-5 rounded-lg">
