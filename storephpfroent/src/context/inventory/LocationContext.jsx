@@ -28,6 +28,24 @@ export const LocationProvider = ({ children }) => {
     }
   };
 
+  // ✅ Update location (room_no, row_no, section, container_no only)
+  const updateLocation = async (id, updatedData) => {
+    try {
+      const token = localStorage.getItem("token");
+      const headers = { Authorization: `Bearer ${token}` };
+
+      await axios.patch(
+        `http://127.0.0.1:8000/api/locations/${id}`,
+        updatedData,
+        { headers }
+      );
+
+      fetchLocations(); // Refresh locations after update
+    } catch (error) {
+      console.error("Error updating location:", error);
+    }
+  };
+
   return (
     <LocationContext.Provider value={{ locations, loading, fetchLocations }}>
       {children}
