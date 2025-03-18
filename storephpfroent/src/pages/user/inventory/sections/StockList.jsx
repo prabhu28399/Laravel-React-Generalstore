@@ -1,13 +1,16 @@
 import React, { useEffect } from "react";
-import { useInventory } from "../../../../context/InventoryContext.jsx";
+import { useStock } from "../../../../context/inventory/StockContext"; // Correct import
+import { useProduct } from "../../../../context/inventory/ProductContext"; // Import Product Context
 import { Edit, Trash2 } from "lucide-react";
 
 const StockList = () => {
-  const { stocks, products, loading } = useInventory();
+  const { stocks, loading } = useStock(); // Get stock data from StockContext
+  const { products } = useProduct(); // Get product data from ProductContext
 
   useEffect(() => {
     console.log("Stock Data:", stocks);
-  }, [stocks]); // Debug API response
+    console.log("Product Data:", products); // Debug Product Data
+  }, [stocks, products]);
 
   if (loading) return <p className="text-white">Loading...</p>;
 
@@ -25,7 +28,7 @@ const StockList = () => {
               <th className="border border-gray-700 p-2">Product Name</th>
               <th className="border border-gray-700 p-2">Category</th>
               <th className="border border-gray-700 p-2">Quantity</th>
-              <th className="border border-gray-700 p-2">Action</th>
+              {/* <th className="border border-gray-700 p-2">Action</th> */}
             </tr>
           </thead>
           <tbody>
@@ -47,14 +50,14 @@ const StockList = () => {
                   <td className="p-2 text-red-500 font-bold">
                     {stock.quantity}
                   </td>
-                  <td className="p-2 flex gap-2">
+                  {/* <td className="p-2 flex gap-2">
                     <button className="p-1 bg-blue-600 rounded hover:bg-blue-500">
                       <Edit className="w-5 h-5 text-white" />
                     </button>
                     <button className="p-1 bg-red-600 rounded hover:bg-red-500">
                       <Trash2 className="w-5 h-5 text-white" />
                     </button>
-                  </td>
+                  </td> */}
                 </tr>
               );
             })}

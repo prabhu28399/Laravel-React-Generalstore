@@ -25,7 +25,7 @@ const menuItems = [
       { name: "Stocks", link: "/inventory/stock" }, // Modify this as needed
     ],
   },
-  { name: "Location", icon: <FaCalendarAlt /> },
+  // { name: "Location", icon: <FaCalendarAlt /> },
   { name: "KathaBook", icon: <FaChartBar /> },
   { name: "Billing", icon: <FaBoxOpen /> },
   { name: "Profile", icon: <FaAppStore /> },
