@@ -14,7 +14,6 @@ class ProductFactory extends Factory
             'product_name' => $this->faker->word,
             'product_id' => 'pid' . $this->generateUniqueProductId(),
             'category_id' => ProductCategory::inRandomOrder()->value('category_id') ?? 'pct100', 
-            'quantity' => rand(1, 100),
             'user_id' => User::inRandomOrder()->value('id') ?? 1,
         ];
     }

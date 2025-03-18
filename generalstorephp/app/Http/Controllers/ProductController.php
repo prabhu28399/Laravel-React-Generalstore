@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 
 class ProductController extends Controller {
@@ -14,40 +17,47 @@ class ProductController extends Controller {
         return response()->json($products, 200);
     }
     
-    
     public function store(Request $request) {
         try {
             $request->validate([
-                'user_id' => 'required|exists:users,id',
-                'category_id' => 'required|exists:product_categories,category_id',
-                'product_name' => 'required|string|unique:products,product_name',
-                'quantity' => 'required|integer|min:1', // ✅ Still validating quantity
+                'product_name' => 'required|string|max:255',
+                'category_id' => 'required|string|exists:product_categories,category_id',
+                'quantity' => 'required|integer|min:0',
             ]);
     
-            // Generate unique product ID (pidXYZ)
-            $productId = 'pid' . rand(100, 999);
+            $productId = 'pid' . $this->generateUniqueProductId();
     
-            // ✅ Create the product
             $product = Product::create([
-                'user_id' => $request->user_id,
+                'user_id' => auth()->id() ?? null,
                 'category_id' => $request->category_id,
-                'product_id' => $productId,
                 'product_name' => $request->product_name,
+                'product_id' => $productId,
             ]);
     
-            // ✅ Store quantity in the stock table
-            $product->stock()->create([
-                'product_id' => $product->product_id,
-                'quantity' => $request->quantity,
-            ]);
+            $product->stock()->updateOrCreate(
+                [],
+                [
+                    'quantity' => $request->quantity,
+                    'user_id' => auth()->id() ?? null, // Add user_id here
+                ]
+            );
     
-            return response()->json($product->load('stock'), 201);
+            return response()->json($product->load('stock', 'category'), 201);
+        } catch (ValidationException $validationException) {
+            return response()->json(['errors' => $validationException->errors()], 422);
         } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to add product',
-                'message' => $e->getMessage(),
-            ], 500);
+            Log::error('Product Store Error: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
         }
+    }
+    // Function to generate a unique product_id
+    private function generateUniqueProductId() {
+        do {
+            $uniqueId = rand(100, 999); // Generate a random 3-digit number
+            $exists = Product::where('product_id', 'pid' . $uniqueId)->exists();
+        } while ($exists);
+    
+        return $uniqueId;
     }
     
     

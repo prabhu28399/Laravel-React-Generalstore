@@ -29,11 +29,33 @@ class ProductLocationController extends Controller {
         return response()->json($location, 200);
     }
 
+    // public function update(Request $request, $id) {
+    //     $location = ProductLocation::findOrFail($id);
+    //     $location->update($request->all());
+    //     return response()->json($location, 200);
+    // }
     public function update(Request $request, $id) {
         $location = ProductLocation::findOrFail($id);
-        $location->update($request->all());
+    
+        // Validate only the updatable fields
+        $request->validate([
+            'room_no' => 'required|integer|between:1,10',
+            'row_no' => 'required|integer|between:1,5',
+            'section' => 'required|alpha|size:1',
+            'container_no' => 'required|integer|between:1,30'
+        ]);
+    
+        // Update only allowed fields
+        $location->update([
+            'room_no' => $request->room_no,
+            'row_no' => $request->row_no,
+            'section' => $request->section,
+            'container_no' => $request->container_no
+        ]);
+    
         return response()->json($location, 200);
     }
+    
 
     public function destroy($id) {
         ProductLocation::findOrFail($id)->delete();

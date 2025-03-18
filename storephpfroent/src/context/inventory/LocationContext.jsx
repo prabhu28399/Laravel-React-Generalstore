@@ -19,6 +19,7 @@ export const LocationProvider = ({ children }) => {
       const res = await axios.get("http://127.0.0.1:8000/api/locations", {
         headers,
       });
+
       setLocations(res.data);
     } catch (error) {
       console.error("Error fetching locations:", error);
@@ -28,7 +29,7 @@ export const LocationProvider = ({ children }) => {
   };
 
   return (
-    <LocationContext.Provider value={{ locations, loading }}>
+    <LocationContext.Provider value={{ locations, loading, fetchLocations }}>
       {children}
     </LocationContext.Provider>
   );

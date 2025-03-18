@@ -7,8 +7,7 @@ import axios from "axios";
 
 const ProductList = () => {
   const { user, token } = useContext(AuthContext);
-  const { products, addProduct, updateProduct, deleteProduct, loading } =
-    useProduct();
+  const { products, updateProduct, deleteProduct, loading } = useProduct();
   const { categories } = useCategory(); // ✅ Use categories from CategoryContext
 
   const [editingProductId, setEditingProductId] = useState(null);
@@ -40,8 +39,9 @@ const ProductList = () => {
   };
 
   const handleAddProduct = async () => {
-    if (!user || !user.id) {
-      console.error("User ID is missing.");
+    if (!user || !user.id || !token) {
+      console.error("User ID or Token is missing.");
+      alert("Please log in to add products.");
       return;
     }
 
@@ -56,12 +56,12 @@ const ProductList = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/products",
+        "http://127.0.0.1:8000/api/products", // Direct API URL
         {
+          product_name: newProduct.product_name.trim(),
+          quantity: parseInt(newProduct.quantity, 10),
+          category_id: newProduct.category_id,
           user_id: user.id,
-          category_id: newProduct.category_id, // ✅ Sends selected category ID
-          product_name: newProduct.product_name, // ✅ Sends product name
-          quantity: newProduct.quantity, // ✅ Ensures quantity is sent
         },
         {
           headers: {
@@ -71,22 +71,24 @@ const ProductList = () => {
         }
       );
 
-      console.log("Product added:", response.data);
-
-      // ✅ Clear input fields after successful addition
-      setNewProduct({
-        product_name: "",
-        quantity: "",
-        category_id: "",
-      });
-
-      // ✅ Refresh product list
-      addProduct(response.data);
+      if (response.status === 201) {
+        alert("Product added successfully!");
+        setNewProduct({ product_name: "", quantity: "", category_id: "" });
+        // fetchProducts();
+      } else {
+        alert("Failed to add product. Please try again.");
+        console.error("Failed to add product:", response);
+      }
     } catch (error) {
-      console.error(
-        "Error adding product:",
-        error.response?.data || error.message
-      );
+      if (error.response && error.response.data && error.response.data.errors) {
+        const errorMessages = Object.values(error.response.data.errors)
+          .flat()
+          .join("\n");
+        alert("Validation errors:\n" + errorMessages);
+      } else {
+        alert("Failed to add product. Please try again.");
+      }
+      console.error("Error adding product:", error);
     }
   };
 

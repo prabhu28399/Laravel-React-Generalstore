@@ -1,19 +1,16 @@
-import React, { useState } from "react";
-import { useProduct } from "../../../../context/inventory/ProductContext"; // ✅ Use ProductContext
-import { Edit, Trash2, Save } from "lucide-react";
+import React from "react";
+import { Edit, Trash2, Save, X } from "lucide-react";
 
-const ProdListCompnt = ({ products }) => {
-  const { updateProduct, deleteProduct } = useProduct(); // ✅ Get functions from context
-
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [updatedName, setUpdatedName] = useState("");
-
-  const handleUpdate = (id) => {
-    if (!updatedName.trim()) return alert("Product name cannot be empty!");
-    updateProduct(id, { product_name: updatedName });
-    setEditingProduct(null);
-  };
-
+const ProdListCompnt = ({
+  products,
+  editingProductId,
+  updatedProductData,
+  handleEditClick,
+  handleSaveClick,
+  setEditingProductId,
+  setUpdatedProductData,
+  deleteProduct,
+}) => {
   return (
     <table className="w-full border border-gray-700 text-left">
       <thead className="bg-gray-800">
@@ -30,11 +27,16 @@ const ProdListCompnt = ({ products }) => {
           <tr key={product.product_id} className="border border-gray-700">
             <td className="p-2">{product.product_id}</td>
             <td className="p-2">
-              {editingProduct === product.product_id ? (
+              {editingProductId === product.product_id ? (
                 <input
                   type="text"
-                  value={updatedName}
-                  onChange={(e) => setUpdatedName(e.target.value)}
+                  value={updatedProductData.product_name}
+                  onChange={(e) =>
+                    setUpdatedProductData((prev) => ({
+                      ...prev,
+                      product_name: e.target.value,
+                    }))
+                  }
                   className="bg-gray-700 p-1 rounded text-white"
                 />
               ) : (
@@ -42,21 +44,42 @@ const ProdListCompnt = ({ products }) => {
               )}
             </td>
             <td className="p-2">{product.category?.category_name || "N/A"}</td>
-            <td className="p-2">{product.stock?.quantity || "0"}</td>
+            <td className="p-2">
+              {editingProductId === product.product_id ? (
+                <input
+                  type="number"
+                  value={updatedProductData.quantity}
+                  onChange={(e) =>
+                    setUpdatedProductData((prev) => ({
+                      ...prev,
+                      quantity: e.target.value,
+                    }))
+                  }
+                  className="bg-gray-700 p-1 rounded text-white"
+                />
+              ) : (
+                product.stock?.quantity || "0"
+              )}
+            </td>
             <td className="p-2 flex gap-2">
-              {editingProduct === product.product_id ? (
-                <button
-                  onClick={() => handleUpdate(product.product_id)}
-                  className="p-1 bg-green-600 rounded hover:bg-green-500"
-                >
-                  <Save className="w-5 h-5 text-white" />
-                </button>
+              {editingProductId === product.product_id ? (
+                <>
+                  <button
+                    onClick={handleSaveClick}
+                    className="p-1 bg-green-600 rounded hover:bg-green-500"
+                  >
+                    <Save className="w-5 h-5 text-white" />
+                  </button>
+                  <button
+                    onClick={() => setEditingProductId(null)}
+                    className="p-1 bg-gray-600 rounded hover:bg-gray-500"
+                  >
+                    <X className="w-5 h-5 text-white" />
+                  </button>
+                </>
               ) : (
                 <button
-                  onClick={() => {
-                    setEditingProduct(product.product_id);
-                    setUpdatedName(product.product_name);
-                  }}
+                  onClick={() => handleEditClick(product)}
                   className="p-1 bg-blue-600 rounded hover:bg-blue-500"
                 >
                   <Edit className="w-5 h-5 text-white" />
