@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaHome,
   FaMoneyBillWave,
@@ -19,19 +20,23 @@ const menuItems = [
     name: "Inventory",
     icon: <FaMoneyBillWave />,
     subItems: [
-      { name: "Category", link: "/inventory/category" }, // Category with an external link
-      { name: "Products", link: "/inventory/product" }, // Modify this as needed
-      { name: "Locations", link: "/inventory/location" }, // Modify this as needed
-      { name: "Stocks", link: "/inventory/stock" }, // Modify this as needed
+      { name: "Category", link: "/inventory/category" },
+      { name: "Products", link: "/inventory/product" },
+      { name: "Locations", link: "/inventory/location" },
+      { name: "Stocks", link: "/inventory/stock" },
     ],
   },
-  // { name: "Location", icon: <FaCalendarAlt /> },
-  { name: "KathaBook", icon: <FaChartBar /> },
-  { name: "Billing", icon: <FaBoxOpen /> },
-  { name: "Profile", icon: <FaAppStore /> },
-  { name: "About Us", icon: <FaGlobe /> },
-  { name: "Contact Us", icon: <FaInbox /> },
-  { name: "Feedback", icon: <FaUsers /> },
+  {
+    name: "KathaBook",
+    link: "/kathabook/customers",
+    icon: <FaChartBar />,
+  },
+  { name: "Billing", link: "/billing", icon: <FaBoxOpen /> },
+  { name: "Profile", link: "/profile", icon: <FaAppStore /> },
+  { name: "About Us", link: "/about", icon: <FaGlobe /> },
+  { name: "Contact Us", link: "/contact", icon: <FaInbox /> },
+  { name: "Feedback", link: "/feedback", icon: <FaUsers /> },
+  { name: "Testing", link: "/testing", icon: <FaUsers /> },
 ];
 
 const UserNav = () => {
@@ -52,38 +57,41 @@ const UserNav = () => {
       <ul className="mt-2">
         {menuItems.map((item, index) => (
           <li key={index} className="group">
-            <button
-              onClick={() => toggleMenu(index)}
-              className="flex items-center justify-between w-full px-3 py-2 rounded-md hover:bg-gray-800"
-            >
-              <span className="flex items-center space-x-2">
-                {item.icon}
-                <span>{item.name}</span>
-              </span>
-              {item.subItems && (
+            {item.subItems ? (
+              <button
+                onClick={() => toggleMenu(index)}
+                className="flex items-center justify-between w-full px-3 py-2 rounded-md hover:bg-gray-800"
+              >
+                <span className="flex items-center space-x-2">
+                  {item.icon}
+                  <span>{item.name}</span>
+                </span>
                 <FaAngleRight
                   className={`text-sm transition-transform ${
                     open === index ? "rotate-90" : ""
                   }`}
                 />
-              )}
-            </button>
+              </button>
+            ) : (
+              <Link
+                to={item.link || "#"}
+                className="flex items-center justify-between w-full px-3 py-2 rounded-md hover:bg-gray-800"
+              >
+                <span className="flex items-center space-x-2">
+                  {item.icon}
+                  <span>{item.name}</span>
+                </span>
+              </Link>
+            )}
 
-            {/* Dropdown Content for Inventory */}
+            {/* Dropdown for SubItems */}
             {open === index && item.subItems && (
               <ul className="ml-6 mt-1 text-sm text-gray-400">
                 {item.subItems.map((subItem, subIndex) => (
-                  <li
-                    key={subIndex}
-                    className="py-1 hover:text-white cursor-pointer"
-                  >
-                    <a
-                      href={subItem.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                  <li key={subIndex} className="py-1 hover:text-white">
+                    <Link to={subItem.link} className="block w-full">
                       {subItem.name}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>

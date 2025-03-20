@@ -1,7 +1,7 @@
 import React from "react";
-import UserHeader from "../sections/UserHeader.jsx";
-import UserNav from "../sections/UserNav.jsx";
-import InvenCateBody from "../inventory/sections/InvenCateBody.jsx";
+import UserHeader from "../../user/sections/UserHeader.jsx";
+import UserNav from "../../user/sections/UserNav.jsx";
+import InvenCateBody from "../sections/InvenCateBody";
 const InventoryCategory = () => {
   return (
     <div>

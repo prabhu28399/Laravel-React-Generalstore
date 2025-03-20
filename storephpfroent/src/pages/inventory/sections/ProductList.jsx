@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useProduct } from "../../../../context/inventory/ProductContext";
-import { useCategory } from "../../../../context/inventory/CategoryContext"; // ✅ Fixed import path
-import { AuthContext } from "../../../../context/AuthContext";
+import { useProduct } from "../../../context/inventory/ProductContext";
+import { useCategory } from "../../../context/inventory/CategoryContext"; // ✅ Fixed import path
+import { AuthContext } from "../../../context/AuthContext";
 import { Edit, Trash2, Save, X, Plus } from "lucide-react";
 import axios from "axios";
 

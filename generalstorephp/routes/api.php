@@ -3,11 +3,18 @@
 
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KathabookCustomerController;
+use App\Http\Controllers\KathabookCustomerDetailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductCategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductLocationController;
 use App\Http\Controllers\ProductStockController;
+
+// use App\Models\Customer;
+// use App\Models\Transaction;
+// use App\Models\Payment;
+// use Illuminate\Http\Request;
 
 // User Authentication Routes
 Route::post('/user/register', [AuthController::class, 'registerUser']);
@@ -49,6 +56,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/stocks/{id}', [ProductStockController::class, 'show']);
     Route::put('/stocks/{id}', [ProductStockController::class, 'update']);
     Route::delete('/stocks/{id}', [ProductStockController::class, 'destroy']);
+
+
+
+    // Kathabook routes 
+    Route::get('/customers', [KathabookCustomerController::class, 'index']);
+    Route::get('/customers/{id}', [KathabookCustomerController::class, 'show']);
+    Route::post('/customers', [KathabookCustomerController::class, 'store']);
+
+    Route::get('/customers/{id}/transactions', [KathabookCustomerDetailController::class, 'index']);
+    Route::post('/transactions', [KathabookCustomerDetailController::class, 'store']);
 });
 
 

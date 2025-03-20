@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { useUser } from "../../context/UserContext"; // Import UserContext
 
 const CategoryContext = createContext();
 

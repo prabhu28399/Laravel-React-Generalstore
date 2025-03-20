@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useLocation } from "../../../../context/inventory/LocationContext";
-import { AuthContext } from "../../../../context/AuthContext";
+import { useLocation } from "../../../context/inventory/LocationContext";
+import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import ProductLocaCompnt from "../components/ProductLocaCompnt";
 

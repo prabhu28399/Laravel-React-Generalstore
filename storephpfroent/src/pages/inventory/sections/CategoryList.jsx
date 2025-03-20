@@ -1,8 +1,8 @@
 import React, { useState, useContext } from "react";
-import { useCategory } from "../../../../context/inventory/CategoryContext";
+import { useCategory } from "../../../context/inventory/CategoryContext";
 import { Plus } from "lucide-react";
 import axios from "axios";
-import { AuthContext } from "../../../../context/AuthContext";
+import { AuthContext } from "../../../context/AuthContext";
 import CtgListCompnt from "../components/CtgListCompnt"; // ✅ Import table component
 
 const CategoryList = () => {

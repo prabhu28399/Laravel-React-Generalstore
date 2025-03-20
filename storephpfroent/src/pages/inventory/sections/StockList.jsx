@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { useStock } from "../../../../context/inventory/StockContext"; // Correct import
-import { useProduct } from "../../../../context/inventory/ProductContext"; // Import Product Context
+import { useStock } from "../../../context/inventory/StockContext"; // Correct import
+import { useProduct } from "../../../context/inventory/ProductContext"; // Import Product Context
 import { Edit, Trash2 } from "lucide-react";
 
 const StockList = () => {
